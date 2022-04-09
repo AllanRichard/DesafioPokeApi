@@ -1,14 +1,35 @@
-﻿// Array de pokemons
-string[] pokemons = { "Charmander", "Squirtle", "Caterpie", "Weedle", "Pidgey", "Pidgeotto", "Rattata", "Spearow", "Fearow", "Arbok", "Pikachu", "Sandshrew" };
+﻿using DesafioPokeApi.Models;
+using System.Text.Json;
 
-foreach (var pokemon in pokemons)
+namespace DesafioPokeApi
 {
-    var name = pokemon.ToLower();
-    using var client = new HttpClient();
-    var httpResponseMessage = await client.GetAsync("https://pokeapi.co/api/v2/pokemon/" + name);
-    if (httpResponseMessage.IsSuccessStatusCode)
+    class Program
     {
-        var content = await httpResponseMessage.Content.ReadAsStringAsync();
-        Console.WriteLine(content);
+        static HttpClient client = new HttpClient();
+
+        static async Task Main()
+        {
+            string[] pokemons = { "Charmander", "Squirtle", "Caterpie", "Weedle", "Pidgey", "Pidgeotto", "Rattata", "Spearow", "Fearow", "Arbok", "Pikachu", "Sandshrew" };
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            foreach (var name in pokemons)
+            {
+                try
+                {
+                    Pokemon? pokemon = null;
+                    HttpResponseMessage response = await client.GetAsync("https://pokeapi.co/api/v2/pokemon/" + name.ToLower());
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        pokemon = JsonSerializer.Deserialize<Pokemon>(content, options);
+                        Console.WriteLine(pokemon + "\n");
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    Console.WriteLine("\nException Caught!");
+                    Console.WriteLine("Message :{0} ", e.Message);
+                }
+            }
+        }
     }
 }

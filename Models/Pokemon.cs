@@ -8,20 +8,16 @@ namespace DesafioPokeApi.Models
 {
     internal class Pokemon
     {
+        public int Id { get; set; }
         public string Name { get; set; }
-        public string[] Types { get; set; }
-        public string[] Abilities { get; set; }
+        public List<PokemonType> Types { get; set; }
+        public List<PokemonAbility> Abilities { get; set; }
         public int Weight { get; set; }
         public int Height { get; set; }
-        public string[] Sprites { get; set; }
+        public PokemonSprites Sprites { get; set; }
         public override string ToString()
         {
-            return $"Name: {Name}, Types: {Types}, Abilities: {Abilities}, Weight: {Weight}, Height: {Height}, Sprites: {Sprites}";
+            return $"Name: {Name}, Types: { string.Join(", ", Types) }, Abilities: { string.Join(", ", Abilities) }, Weight: {Weight}, Height: {Height}, Sprites: {Sprites.Front_Default}";
         }
-    }
-
-    internal class PokemonList
-    {
-        public Pokemon[]? Pokemons { get; set; }
     }
 }
